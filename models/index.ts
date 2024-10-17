@@ -2,6 +2,8 @@ import { gemini15pro } from "./gemini-1.5-pro";
 import { gpt4o } from "./gpt-4o";
 import { claude35sonnet } from "./claude-3-5-sonnet";
 import { perplexityModel } from "./perplexity-llama";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export type ModelHandler = (
   prompt: string,
@@ -12,7 +14,7 @@ export type ModelHandler = (
   reasoning: string;
 }>;
 
-const prompt = `
+const defaultPrompt = `
 
 Your task is to play a game.  We will give you a 2d array of characters that represent the game board.  Before the game starts, you have these two tasks:
 
@@ -86,6 +88,10 @@ export async function runModel(
   error?: string;
 }> {
   let result;
+
+  const activePrompt = await useQuery(api.prompt.getActivePrompt);
+
+  const prompt = activePrompt?.[0].prompt ?? defaultPrompt;
 
   switch (modelId) {
     case "gemini-1.5-pro": {

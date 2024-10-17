@@ -61,4 +61,9 @@ export default defineSchema({
     attempts: v.array(v.id("attempts")),
     hasWon: v.boolean(),
   }).index("by_mapId_userId", ["mapId", "userId"]),
+  prompts: defineTable({
+    promptId: v.id("prompts"),
+    prompt: v.string(),
+    isActive: v.boolean(),
+  }).index("by_active", ["isActive"]),
 });
