@@ -146,9 +146,17 @@ export const playMapAction = internalAction({
       return;
     }
 
+    const activePromptQuery = await ctx.runQuery(api.prompts.getActivePrompt);
+    const activePrompt = activePromptQuery && activePromptQuery.prompt;
+
+    if (!activePrompt) {
+      throw new Error("Active prompt not found");
+    }
+
     const { solution, reasoning, error } = await runModel(
       args.modelId,
       map.grid,
+      activePrompt,
     );
 
     await ctx.runMutation(internal.results.updateResult, {
@@ -180,9 +188,17 @@ export const testAIModel = action({
       throw new Error("Map not found");
     }
 
+    const activePromptQuery = await ctx.runQuery(api.prompts.getActivePrompt);
+    const activePrompt = activePromptQuery && activePromptQuery.prompt;
+
+    if (!activePrompt) {
+      throw new Error("Active prompt not found");
+    }
+
     const { solution, reasoning, error } = await runModel(
       args.modelId,
       map.grid,
+      activePrompt,
     );
 
     return {
